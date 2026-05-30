@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>My Projects</title>
+  </head>
+
+  <body>
+    <h1>My Projects</h1>
+
+    <p>
+      <a href="{% url 'tasks:home' %}">Home</a>
+    </p>
+
+    {% if projects %}
+    <ul>
+      {% for project in projects %}
+      <li>
+        <a href="{% url 'tasks:project_detail' project.pk %}">
+          {{ project.name }}
+        </a>
+
+        {% if project.description %}
+        <p>{{ project.description }}</p>
+        {% else %}
+        <p>No description provided.</p>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>You do not have any projects yet.</p>
+    {% endif %}
+  </body>
+
+</html>

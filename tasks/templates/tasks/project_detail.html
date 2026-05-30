@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>{{ project.name }}</title>
+  </head>
+
+  <body>
+    <p>
+      <a href="{% url 'tasks:project_list' %}">Back to Projects</a>
+    </p>
+
+    <h1>{{ project.name }}</h1>
+
+    {% if project.description %}
+    <p>{{ project.description }}</p>
+    {% else %}
+    <p>No description provided.</p>
+    {% endif %}
+
+    <hr>
+
+    <p><strong>Created:</strong> {{ project.created_at }}</p>
+    <p><strong>Last Updated:</strong> {{ project.updated_at }}</p>
+  </body>
+
+</html>
