@@ -11,6 +11,12 @@
       <a href="{% url 'tasks:project_list' %}">Back to Projects</a>
     </p>
 
+    {% if messages %}
+    {% for message in messages %}
+    <p>{{ message }}</p>
+    {% endfor %}
+    {% endif %}
+
     <h1>{{ project.name }}</h1>
 
     {% if project.description %}
@@ -18,6 +24,11 @@
     {% else %}
     <p>No description provided.</p>
     {% endif %}
+
+    <p>
+      <a href="{% url 'tasks:project_edit' project.pk %}">Edit Project</a> |
+      <a href="{% url 'tasks:project_delete' project.pk %}">Delete Project</a>
+    </p>
 
     <hr>
 

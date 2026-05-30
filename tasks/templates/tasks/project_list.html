@@ -9,8 +9,15 @@
   <body>
     <h1>My Projects</h1>
 
+    {% if messages %}
+    {% for message in messages %}
+    <p>{{ message }}</p>
+    {% endfor %}
+    {% endif %}
+
     <p>
-      <a href="{% url 'tasks:home' %}">Home</a>
+      <a href="{% url 'tasks:home' %}">Home</a> |
+      <a href="{% url 'tasks:project_create' %}">Create Project</a>
     </p>
 
     {% if projects %}
