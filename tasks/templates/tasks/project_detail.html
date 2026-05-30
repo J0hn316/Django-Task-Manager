@@ -32,6 +32,52 @@
 
     <hr>
 
+    <h2>Tasks</h2>
+
+    {% if tasks %}
+    <ul>
+      {% for task in tasks %}
+      <li>
+        <h3>{{ task.title }}</h3>
+
+        {% if task.description %}
+        <p>{{ task.description }}</p>
+        {% else %}
+        <p>No description provided.</p>
+        {% endif %}
+
+        <p>
+          <strong>Status:</strong> {{ task.get_status_display }}
+        </p>
+
+        <p>
+          <strong>Priority:</strong> {{ task.get_priority_display }}
+        </p>
+
+        {% if task.due_date %}
+        <p>
+          <strong>Due Date:</strong> {{ task.due_date }}
+        </p>
+        {% else %}
+        <p>
+          <strong>Due Date:</strong> No due date
+        </p>
+        {% endif %}
+
+        {% if task.completed_at %}
+        <p>
+          <strong>Completed:</strong> {{ task.completed_at }}
+        </p>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>This project does not have any tasks yet.</p>
+    {% endif %}
+
+    <hr>
+
     <p><strong>Created:</strong> {{ project.created_at }}</p>
     <p><strong>Last Updated:</strong> {{ project.updated_at }}</p>
   </body>
