@@ -22,6 +22,19 @@
     <p>No description provided.</p>
     {% endif %}
 
+    <hr />
+
+    <h2>Project Stats</h2>
+
+    <ul>
+      <li><strong>Total Tasks:</strong> {{ total_tasks }}</li>
+      <li><strong>To Do:</strong> {{ todo_tasks }}</li>
+      <li><strong>In Progress:</strong> {{ in_progress_tasks }}</li>
+      <li><strong>Completed:</strong> {{ completed_tasks }}</li>
+      <li><strong>High Priority:</strong> {{ high_priority_tasks }}</li>
+      <li><strong>Overdue:</strong> {{ overdue_tasks }}</li>
+    </ul>
+
     <p>
       <a href="{% url 'tasks:project_edit' project.pk %}">Edit Project</a> |
       <a href="{% url 'tasks:project_delete' project.pk %}">Delete Project</a> |
@@ -31,6 +44,7 @@
     <hr />
 
     <h2>Tasks</h2>
+    <p>Showing {{ filtered_task_count }} of {{ total_tasks }} task(s).</p>
     <form method="get">
       <p>
         <label for="q">Search:</label>

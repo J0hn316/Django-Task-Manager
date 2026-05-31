@@ -22,7 +22,26 @@ def project_list(request):
 @login_required
 def project_detail(request, pk):
     project = get_object_or_404(Project, pk=pk, owner=request.user)
-    tasks = project.tasks.all()
+
+    all_tasks = project.tasks.all()
+
+    total_tasks = all_tasks.count()
+
+    todo_tasks = all_tasks.filter(status=Task.Status.TODO).count()
+
+    in_progress_tasks = all_tasks.filter(status=Task.Status.IN_PROGRESS).count()
+
+    completed_tasks = all_tasks.filter(status=Task.Status.DONE).count()
+
+    high_priority_tasks = all_tasks.filter(priority=Task.Priority.HIGH).count()
+
+    overdue_tasks = (
+        all_tasks.filter(due_date__lt=timezone.localdate())
+        .exclude(status=Task.Status.DONE)
+        .count()
+    )
+
+    tasks = all_tasks
 
     query = request.GET.get("q", "")
     status = request.GET.get("status", "")
@@ -53,6 +72,7 @@ def project_detail(request, pk):
 
     sort_field = allowed_sorts.get(sort, "due_date")
     tasks = tasks.order_by(sort_field)
+    filtered_task_count = tasks.count()
 
     return render(
         request,
@@ -66,6 +86,13 @@ def project_detail(request, pk):
             "selected_sort": sort,
             "status_choices": Task.Status.choices,
             "priority_choices": Task.Priority.choices,
+            "total_tasks": total_tasks,
+            "todo_tasks": todo_tasks,
+            "in_progress_tasks": in_progress_tasks,
+            "completed_tasks": completed_tasks,
+            "high_priority_tasks": high_priority_tasks,
+            "overdue_tasks": overdue_tasks,
+            "filtered_task_count": filtered_task_count,
         },
     )
 
