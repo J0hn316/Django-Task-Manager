@@ -1,8 +1,7 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
   <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>{{ project.name }}</title>
   </head>
 
@@ -11,11 +10,9 @@
       <a href="{% url 'tasks:project_list' %}">Back to Projects</a>
     </p>
 
-    {% if messages %}
-    {% for message in messages %}
+    {% if messages %} {% for message in messages %}
     <p>{{ message }}</p>
-    {% endfor %}
-    {% endif %}
+    {% endfor %} {% endif %}
 
     <h1>{{ project.name }}</h1>
 
@@ -31,9 +28,171 @@
       <a href="{% url 'tasks:task_create' project.pk %}">Add Task</a>
     </p>
 
-    <hr>
+    <hr />
 
     <h2>Tasks</h2>
+    <form method="get">
+      <p>
+        <label for="q">Search:</label>
+        <input
+          type="text"
+          id="q"
+          name="q"
+          value="{{ query }}"
+          placeholder="Search tasks..."
+        />
+      </p>
+
+      <p>
+        <label for="status">Status:</label>
+        <select id="status" name="status">
+          <option value="">All Statuses</option>
+          {% for value, label in status_choices %}
+          <option
+            value="{{ value }}"
+            {%
+            if
+            selected_status=""
+            ="value"
+            %}selected{%
+            endif
+            %}
+          >
+            {{ label }}
+          </option>
+          {% endfor %}
+        </select>
+      </p>
+
+      <p>
+        <label for="priority">Priority:</label>
+        <select id="priority" name="priority">
+          <option value="">All Priorities</option>
+          {% for value, label in priority_choices %}
+          <option
+            value="{{ value }}"
+            {%
+            if
+            selected_priority=""
+            ="value"
+            %}
+            selected
+            {%
+            endif
+            %}
+          >
+            {{ label }}
+          </option>
+          {% endfor %}
+        </select>
+      </p>
+
+      <p>
+        <label for="sort">Sort:</label>
+        <select id="sort" name="sort">
+          <option
+            value="due_date"
+            {%
+            if
+            selected_sort=""
+            ="due_date"
+            %}selected{%
+            endif
+            %}
+          >
+            Due Date: Oldest First
+          </option>
+          <option
+            value="-due_date"
+            {%
+            if
+            selected_sort=""
+            ="-due_date"
+            %}selected{%
+            endif
+            %}
+          >
+            Due Date: Newest First
+          </option>
+          <option
+            value="created_at"
+            {%
+            if
+            selected_sort=""
+            ="created_at"
+            %}selected{%
+            endif
+            %}
+          >
+            Created: Oldest First
+          </option>
+          <option
+            value="-created_at"
+            {%
+            if
+            selected_sort=""
+            ="-created_at"
+            %}selected{%
+            endif
+            %}
+          >
+            Created: Newest First
+          </option>
+          <option
+            value="title"
+            {%
+            if
+            selected_sort=""
+            ="title"
+            %}selected{%
+            endif
+            %}
+          >
+            Title: A-Z
+          </option>
+          <option
+            value="-title"
+            {%
+            if
+            selected_sort=""
+            ="-title"
+            %}selected{%
+            endif
+            %}
+          >
+            Title: Z-A
+          </option>
+          <option
+            value="priority"
+            {%
+            if
+            selected_sort=""
+            ="priority"
+            %}selected{%
+            endif
+            %}
+          >
+            Priority: Low to High
+          </option>
+          <option
+            value="-priority"
+            {%
+            if
+            selected_sort=""
+            ="-priority"
+            %}selected{%
+            endif
+            %}
+          >
+            Priority: High to Low
+          </option>
+        </select>
+      </p>
+
+      <button type="submit">Apply Filters</button>
+
+      <a href="{% url 'tasks:project_detail' project.pk %}">Clear Filters</a>
+    </form>
 
     {% if tasks %}
     <ul>
@@ -47,38 +206,23 @@
         <p>No description provided.</p>
         {% endif %}
 
-        <p>
-          <strong>Status:</strong> {{ task.get_status_display }}
-        </p>
+        <p><strong>Status:</strong> {{ task.get_status_display }}</p>
 
-        <p>
-          <strong>Priority:</strong> {{ task.get_priority_display }}
-        </p>
+        <p><strong>Priority:</strong> {{ task.get_priority_display }}</p>
 
         {% if task.due_date %}
-        <p>
-          <strong>Due Date:</strong> {{ task.due_date }}
-        </p>
+        <p><strong>Due Date:</strong> {{ task.due_date }}</p>
         {% else %}
-        <p>
-          <strong>Due Date:</strong> No due date
-        </p>
-        {% endif %}
-
-        {% if task.completed_at %}
-        <p>
-          <strong>Completed:</strong> {{ task.completed_at }}
-        </p>
+        <p><strong>Due Date:</strong> No due date</p>
+        {% endif %} {% if task.completed_at %}
+        <p><strong>Completed:</strong> {{ task.completed_at }}</p>
         {% endif %}
 
         <p>
           <a href="{% url 'tasks:task_edit' task.pk %}">Edit Task</a> |
           <a href="{% url 'tasks:task_delete' task.pk %}">Delete Task</a> |
           <a href="{% url 'tasks:task_toggle_complete' task.pk %}">
-            {% if task.status == "done" %}
-            Reopen Task
-            {% else %}
-            Mark Complete
+            {% if task.status == "done" %} Reopen Task {% else %} Mark Complete
             {% endif %}
           </a>
         </p>
@@ -92,10 +236,9 @@
     </p>
     {% endif %}
 
-    <hr>
+    <hr />
 
     <p><strong>Created:</strong> {{ project.created_at }}</p>
     <p><strong>Last Updated:</strong> {{ project.updated_at }}</p>
   </body>
-
 </html>

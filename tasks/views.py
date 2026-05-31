@@ -1,7 +1,8 @@
+from django.db.models import Q
 from django.utils import timezone
 from django.contrib import messages
-from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
 
 from .models import Project, Task
 from .forms import ProjectForm, TaskForm
@@ -23,12 +24,48 @@ def project_detail(request, pk):
     project = get_object_or_404(Project, pk=pk, owner=request.user)
     tasks = project.tasks.all()
 
+    query = request.GET.get("q", "")
+    status = request.GET.get("status", "")
+    priority = request.GET.get("priority", "")
+    sort = request.GET.get("sort", "due_date")
+
+    if query:
+        tasks = tasks.filter(
+            Q(title__icontains=query) | Q(description__icontains=query)
+        )
+
+    if status:
+        tasks = tasks.filter(status=status)
+
+    if priority:
+        tasks = tasks.filter(priority=priority)
+
+    allowed_sorts = {
+        "due_date": "due_date",
+        "-due_date": "-due_date",
+        "priority": "priority",
+        "-priority": "-priority",
+        "created_at": "created_at",
+        "-created_at": "-created_at",
+        "title": "title",
+        "-title": "-title",
+    }
+
+    sort_field = allowed_sorts.get(sort, "due_date")
+    tasks = tasks.order_by(sort_field)
+
     return render(
         request,
         "tasks/project_detail.html",
         {
             "project": project,
             "tasks": tasks,
+            "query": query,
+            "selected_status": status,
+            "selected_priority": priority,
+            "selected_sort": sort,
+            "status_choices": Task.Status.choices,
+            "priority_choices": Task.Priority.choices,
         },
     )
 
