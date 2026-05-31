@@ -27,7 +27,8 @@
 
     <p>
       <a href="{% url 'tasks:project_edit' project.pk %}">Edit Project</a> |
-      <a href="{% url 'tasks:project_delete' project.pk %}">Delete Project</a>
+      <a href="{% url 'tasks:project_delete' project.pk %}">Delete Project</a> |
+      <a href="{% url 'tasks:task_create' project.pk %}">Add Task</a>
     </p>
 
     <hr>
@@ -69,11 +70,26 @@
           <strong>Completed:</strong> {{ task.completed_at }}
         </p>
         {% endif %}
+
+        <p>
+          <a href="{% url 'tasks:task_edit' task.pk %}">Edit Task</a> |
+          <a href="{% url 'tasks:task_delete' task.pk %}">Delete Task</a> |
+          <a href="{% url 'tasks:task_toggle_complete' task.pk %}">
+            {% if task.status == "done" %}
+            Reopen Task
+            {% else %}
+            Mark Complete
+            {% endif %}
+          </a>
+        </p>
       </li>
       {% endfor %}
     </ul>
     {% else %}
     <p>This project does not have any tasks yet.</p>
+    <p>
+      <a href="{% url 'tasks:task_create' project.pk %}">Add your first task</a>
+    </p>
     {% endif %}
 
     <hr>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+  </head>
+
+  <body>
+    <p>
+      <a href="{% url 'tasks:project_detail' project.pk %}">Back to Project</a>
+    </p>
+
+    <h1>{{ title }}</h1>
+
+    <p><strong>Project:</strong> {{ project.name }}</p>
+
+    <form method="post">
+      {% csrf_token %}
+
+      {{ form.as_p }}
+
+      <button type="submit">Save Task</button>
+    </form>
+  </body>
+
+</html>

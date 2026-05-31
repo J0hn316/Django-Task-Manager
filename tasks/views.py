@@ -1,9 +1,10 @@
+from django.utils import timezone
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
-from .models import Project
-from .forms import ProjectForm
+from .models import Project, Task
+from .forms import ProjectForm, TaskForm
 
 
 def home(request):
@@ -83,3 +84,104 @@ def project_delete(request, pk):
         return redirect("tasks:project_list")
 
     return render(request, "tasks/project_confirm_delete.html", {"project": project})
+
+
+@login_required
+def task_create(request, project_pk):
+    project = get_object_or_404(Project, pk=project_pk, owner=request.user)
+
+    if request.method == "POST":
+        form = TaskForm(request.POST)
+
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.project = project
+
+            if task.status == Task.Status.DONE and task.completed_at is None:
+                task.completed_at = timezone.now()
+
+            task.save()
+
+            messages.success(request, "Task created successfully.")
+            return redirect("tasks:project_detail", pk=project.pk)
+    else:
+        form = TaskForm()
+
+    return render(
+        request,
+        "tasks/task_form.html",
+        {
+            "form": form,
+            "project": project,
+            "title": "Create Task",
+        },
+    )
+
+
+@login_required
+def task_edit(request, pk):
+    task = get_object_or_404(Task, pk=pk, project__owner=request.user)
+
+    if request.method == "POST":
+        form = TaskForm(request.POST, instance=task)
+
+        if form.is_valid():
+            updated_task = form.save(commit=False)
+
+            if (
+                updated_task.status == Task.Status.DONE
+                and updated_task.completed_at is None
+            ):
+                updated_task.completed_at = timezone.now()
+            elif updated_task.status != Task.Status.DONE:
+                updated_task.completed_at = None
+
+            updated_task.save()
+
+            messages.success(request, "Task updated successfully.")
+            return redirect("tasks:project_detail", pk=updated_task.project.pk)
+    else:
+        form = TaskForm(instance=task)
+
+    return render(
+        request,
+        "tasks/task_form.html",
+        {
+            "form": form,
+            "project": task.project,
+            "task": task,
+            "title": "Edit Task",
+        },
+    )
+
+
+@login_required
+def task_delete(request, pk):
+    task = get_object_or_404(Task, pk=pk, project__owner=request.user)
+    project_pk = task.project.pk
+
+    if request.method == "POST":
+        task.delete()
+
+        messages.success(request, "Task deleted successfully.")
+        return redirect("tasks:project_detail", pk=project_pk)
+
+    return render(request, "tasks/task_confirm_delete.html", {"task": task})
+
+
+@login_required
+def task_toggle_complete(request, pk):
+    task = get_object_or_404(Task, pk=pk, project__owner=request.user)
+
+    if task.status == Task.Status.DONE:
+        task.status = Task.Status.TODO
+        task.completed_at = None
+        messages.success(request, "Task reopened successfully.")
+    else:
+        task.status = Task.Status.DONE
+        task.completed_at = timezone.now()
+        messages.success(request, "Task marked as complete.")
+
+    task.save()
+
+    return redirect("tasks:project_detail", pk=task.project.pk)
