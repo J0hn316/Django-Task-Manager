@@ -1,25 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "tasks/base.html" %} {% block title %}{{ title }} | Django Task
+Manager{% endblock %} {% block content %}
+<p>
+  <a href="{% url 'tasks:project_list' %}">← Back to Projects</a>
+</p>
 
-  <head>
-    <meta charset="UTF-8">
-    <title>{{ title }}</title>
-  </head>
+<section class="form-card">
+  <h1>{{ title }}</h1>
 
-  <body>
-    <p>
-      <a href="{% url 'tasks:project_list' %}">Back to Projects</a>
-    </p>
+  <form method="post">
+    {% csrf_token %} {{ form.as_p }}
 
-    <h1>{{ title }}</h1>
-
-    <form method="post">
-      {% csrf_token %}
-
-      {{ form.as_p }}
-
+    <div class="actions">
       <button type="submit">Save Project</button>
-    </form>
-  </body>
-
-</html>
+      <a href="{% url 'tasks:project_list' %}" class="button-secondary"
+        >Cancel</a
+      >
+    </div>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}Django Task Manager{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'tasks/styles.css' %}" />
+  </head>
+  <body>
+    <header class="navbar">
+      <div class="navbar-inner">
+        <div class="brand">
+          <a href="{% url 'tasks:home' %}">Task Manager</a>
+        </div>
+
+        <nav>
+          <a href="{% url 'tasks:home' %}">Home</a>
+          <a href="{% url 'tasks:project_list' %}">Projects</a>
+          <a href="{% url 'tasks:project_create' %}">New Project</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      {% if messages %} {% for message in messages %}
+      <div class="message">{{ message }}</div>
+      {% endfor %} {% endif %} {% block content %} {% endblock %}
+    </main>
+  </body>
+</html>

@@ -1,17 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "tasks/base.html" %} {% block title %}Home | Django Task
+Manager{%endblock %} {% block content %}
+<section class="card">
+  <h1>Django Task Manager</h1>
+  <p>Welcome to the Task Manager / Project Tracker app.</p>
 
-  <head>
-    <meta charset="UTF-8">
-    <title>Django Task Manager</title>
-  </head>
-
-  <body>
-    <h1>Django Task Manager</h1>
-    <p>Welcome to the Task Manager / Project Tracker app.</p>
-    <p>
-      <a href="{% url 'tasks:project_list' %}">View My Projects</a>
-    </p>
-  </body>
-
-</html>
+  <div class="actions">
+    <a href="{% url 'tasks:project_list' %}">View My Projects</a>
+    <a href="{% url 'tasks:project_create' %}" class="button-secondary"
+      >Create Project</a
+    >
+  </div>
+</section>
+{% endblock %}

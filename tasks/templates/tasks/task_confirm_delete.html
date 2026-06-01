@@ -1,24 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "tasks/base.html" %} {% block title %}Delete Task | Django Task
+Manager{% endblock %} {% block content %}
+<section class="form-card">
+  <h1>Delete Task</h1>
 
-  <head>
-    <meta charset="UTF-8">
-    <title>Delete Task</title>
-  </head>
+  <p>Are you sure you want to delete "{{ task.title }}"?</p>
 
-  <body>
-    <p>
-      <a href="{% url 'tasks:project_detail' task.project.pk %}">Cancel</a>
-    </p>
+  <form method="post">
+    {% csrf_token %}
 
-    <h1>Delete Task</h1>
-
-    <p>Are you sure you want to delete "{{ task.title }}"?</p>
-
-    <form method="post">
-      {% csrf_token %}
-      <button type="submit">Yes, Delete</button>
-    </form>
-  </body>
-
-</html>
+    <div class="actions">
+      <button type="submit" class="button-danger">Yes, Delete</button>
+      <a
+        href="{% url 'tasks:project_detail' task.project.pk %}"
+        class="button-secondary"
+        >Cancel</a
+      >
+    </div>
+  </form>
+</section>
+{% endblock %}

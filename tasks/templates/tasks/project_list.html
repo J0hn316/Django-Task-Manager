@@ -1,44 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-
-  <head>
-    <meta charset="UTF-8">
-    <title>My Projects</title>
-  </head>
-
-  <body>
+{% extends "tasks/base.html" %} {% block title %}My Projects | Django Task
+Manager{% endblock %} {% block content %}
+<div class="card-header">
+  <div>
     <h1>My Projects</h1>
+    <p>View and manage your project trackers.</p>
+  </div>
 
-    {% if messages %}
-    {% for message in messages %}
-    <p>{{ message }}</p>
-    {% endfor %}
-    {% endif %}
+  <div class="actions">
+    <a href="{% url 'tasks:project_create' %}">Create Project</a>
+  </div>
+</div>
 
-    <p>
-      <a href="{% url 'tasks:home' %}">Home</a> |
-      <a href="{% url 'tasks:project_create' %}">Create Project</a>
-    </p>
+{% if projects %} {% for project in projects %}
+<article class="card">
+  <h2>
+    <a href="{% url 'tasks:project_detail' project.pk %}">
+      {{ project.name }}
+    </a>
+  </h2>
 
-    {% if projects %}
-    <ul>
-      {% for project in projects %}
-      <li>
-        <a href="{% url 'tasks:project_detail' project.pk %}">
-          {{ project.name }}
-        </a>
+  {% if project.description %}
+  <p>{{ project.description }}</p>
+  {% else %}
+  <p>No description provided.</p>
+  {% endif %}
 
-        {% if project.description %}
-        <p>{{ project.description }}</p>
-        {% else %}
-        <p>No description provided.</p>
-        {% endif %}
-      </li>
-      {% endfor %}
-    </ul>
-    {% else %}
-    <p>You do not have any projects yet.</p>
-    {% endif %}
-  </body>
+  <p><strong>Created:</strong> {{ project.created_at }}</p>
 
-</html>
+  <div class="actions">
+    <a href="{% url 'tasks:project_detail' project.pk %}">View</a>
+    <a href="{% url 'tasks:project_edit' project.pk %}" class="button-secondary"
+      >Edit</a
+    >
+    <a href="{% url 'tasks:project_delete' project.pk %}" class="button-danger"
+      >Delete</a
+    >
+  </div>
+</article>
+{% endfor %} {% else %}
+<div class="empty-state">
+  <p>You do not have any projects yet.</p>
+
+  <div class="actions">
+    <a href="{% url 'tasks:project_create' %}">Create your first project</a>
+  </div>
+</div>
+{% endif %} {% endblock %}

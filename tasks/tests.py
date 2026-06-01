@@ -411,13 +411,13 @@ class TaskFilterAndStatsTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Total Tasks:")
+        self.assertContains(response, "Total Tasks")
         self.assertContains(response, "3")
-        self.assertContains(response, "To Do:")
-        self.assertContains(response, "In Progress:")
-        self.assertContains(response, "Completed:")
-        self.assertContains(response, "High Priority:")
-        self.assertContains(response, "Overdue:")
+        self.assertContains(response, "To Do")
+        self.assertContains(response, "In Progress")
+        self.assertContains(response, "Completed")
+        self.assertContains(response, "High Priority")
+        self.assertContains(response, "Overdue")
 
     def test_overdue_count_excludes_completed_tasks(self):
         self.client.login(username="john", password="testpass123")
@@ -427,5 +427,5 @@ class TaskFilterAndStatsTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Overdue:")
+        self.assertContains(response, "Overdue")
         self.assertContains(response, "1")
