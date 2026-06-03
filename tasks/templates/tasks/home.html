@@ -1,14 +1,55 @@
-{% extends "tasks/base.html" %} {% block title %}Home | Django Task
-Manager{%endblock %} {% block content %}
-<section class="card">
-  <h1 class="text-3xl font-bold text-blue-600">Django Task Manager</h1>
-  <p>Welcome to the Task Manager / Project Tracker app.</p>
+{% extends "tasks/base.html" %} {% block title %} Home | Django Task Manager
+{%endblock %} {% block content %}
+<section
+  class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+>
+  <div class="grid gap-8 p-8 md:grid-cols-[1.3fr_0.7fr] md:p-10">
+    <div>
+      <p
+        class="mb-3 text-sm font-semibold uppercase tracking-wide text-blue-600"
+      >
+        Django Project Tracker
+      </p>
 
-  <div class="actions">
-    <a href="{% url 'tasks:project_list' %}">View My Projects</a>
-    <a href="{% url 'tasks:project_create' %}" class="button-secondary"
-      >Create Project</a
-    >
+      <h1 class="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+        Manage projects, tasks, priorities, and progress.
+      </h1>
+
+      <p class="mt-4 max-w-2xl text-base leading-7 text-slate-600">
+        Welcome to the Django Task Manager / Project Tracker app. Create
+        projects, add tasks, track completion, filter your work, and view
+        project stats from one place.
+      </p>
+
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a
+          href="{% url 'tasks:project_list' %}"
+          class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
+        >
+          View My Projects
+        </a>
+
+        <a
+          href="{% url 'tasks:project_create' %}"
+          class="inline-flex items-center rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50"
+        >
+          Create Project
+        </a>
+      </div>
+    </div>
+
+    <div class="rounded-2xl bg-slate-950 p-6 text-white">
+      <h2 class="text-lg font-semibold">Project Features</h2>
+
+      <ul class="mt-4 space-y-3 text-sm text-slate-300">
+        <li>✓ Project CRUD</li>
+        <li>✓ Task CRUD</li>
+        <li>✓ Search and filtering</li>
+        <li>✓ Dashboard stats</li>
+        <li>✓ Ownership protection</li>
+        <li>✓ Automated tests</li>
+      </ul>
+    </div>
   </div>
 </section>
 {% endblock %}
