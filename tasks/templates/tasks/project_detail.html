@@ -1,103 +1,195 @@
 {% extends "tasks/base.html" %} {% block title %}{{ project.name }} | Django
 Task Manager{% endblock %} {% block content %}
-<p>
-  <a href="{% url 'tasks:project_list' %}">← Back to Projects</a>
-</p>
+<div class="mb-6">
+  <a
+    href="{% url 'tasks:project_list' %}"
+    class="text-sm font-semibold text-blue-600 hover:text-blue-700"
+  >
+    ← Back to Projects
+  </a>
+</div>
 
-<section class="card">
-  <div class="card-header">
+<section
+  class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+>
+  <div
+    class="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between"
+  >
     <div>
-      <h1>{{ project.name }}</h1>
+      <p class="text-sm font-semibold uppercase tracking-wide text-blue-600">
+        Project
+      </p>
+
+      <h1 class="mt-1 text-3xl font-bold tracking-tight text-slate-950">
+        {{ project.name }}
+      </h1>
 
       {% if project.description %}
-      <p>{{ project.description }}</p>
+      <p class="mt-4 max-w-3xl leading-7 text-slate-600">
+        {{ project.description }}
+      </p>
       {% else %}
-      <p>No description provided.</p>
+      <p class="mt-4 italic text-slate-500">No description provided.</p>
       {% endif %}
     </div>
 
-    <div class="actions">
+    <div class="flex flex-wrap gap-2">
       <a
         href="{% url 'tasks:project_edit' project.pk %}"
-        class="button-secondary"
-        >Edit Project</a
+        class="inline-flex items-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
       >
+        Edit Project
+      </a>
+
       <a
         href="{% url 'tasks:project_delete' project.pk %}"
-        class="button-danger"
-        >Delete Project</a
+        class="inline-flex items-center rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-700"
       >
+        Delete Project
+      </a>
     </div>
   </div>
 
-  <p><strong>Created:</strong> {{ project.created_at }}</p>
-  <p><strong>Last Updated:</strong> {{ project.updated_at }}</p>
+  <div
+    class="mt-6 grid gap-3 rounded-xl bg-slate-50 p-4 text-sm text-slate-600 sm:grid-cols-2"
+  >
+    <p>
+      <strong class="text-slate-800">Created:</strong>
+      {{ project.created_at }}
+    </p>
+
+    <p>
+      <strong class="text-slate-800">Last Updated:</strong>
+      {{ project.updated_at }}
+    </p>
+  </div>
 </section>
 
-<section>
-  <h2>Project Stats</h2>
+<section class="mb-8">
+  <div class="mb-4">
+    <p class="text-sm font-semibold uppercase tracking-wide text-blue-600">
+      Dashboard
+    </p>
 
-  <ul class="stats-list">
-    <li class="stat-card">
-      <strong>Total Tasks</strong>
-      <span>{{ total_tasks }}</span>
+    <h2 class="mt-1 text-2xl font-bold tracking-tight text-slate-950">
+      Project Stats
+    </h2>
+  </div>
+
+  <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+    <li class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <strong class="block text-sm font-medium text-slate-500">
+        Total Tasks
+      </strong>
+      <span class="mt-2 block text-3xl font-bold text-slate-950">
+        {{ total_tasks }}
+      </span>
     </li>
 
-    <li class="stat-card">
-      <strong>To Do</strong>
-      <span>{{ todo_tasks }}</span>
+    <li class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <strong class="block text-sm font-medium text-slate-500"> To Do </strong>
+      <span class="mt-2 block text-3xl font-bold text-slate-950">
+        {{ todo_tasks }}
+      </span>
     </li>
 
-    <li class="stat-card">
-      <strong>In Progress</strong>
-      <span>{{ in_progress_tasks }}</span>
+    <li class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <strong class="block text-sm font-medium text-slate-500">
+        In Progress
+      </strong>
+      <span class="mt-2 block text-3xl font-bold text-blue-600">
+        {{ in_progress_tasks }}
+      </span>
     </li>
 
-    <li class="stat-card">
-      <strong>Completed</strong>
-      <span>{{ completed_tasks }}</span>
+    <li class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <strong class="block text-sm font-medium text-slate-500">
+        Completed
+      </strong>
+      <span class="mt-2 block text-3xl font-bold text-green-600">
+        {{ completed_tasks }}
+      </span>
     </li>
 
-    <li class="stat-card">
-      <strong>High Priority</strong>
-      <span>{{ high_priority_tasks }}</span>
+    <li class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <strong class="block text-sm font-medium text-slate-500">
+        High Priority
+      </strong>
+      <span class="mt-2 block text-3xl font-bold text-red-600">
+        {{ high_priority_tasks }}
+      </span>
     </li>
 
-    <li class="stat-card">
-      <strong>Overdue</strong>
-      <span>{{ overdue_tasks }}</span>
+    <li class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <strong class="block text-sm font-medium text-slate-500">
+        Overdue
+      </strong>
+      <span class="mt-2 block text-3xl font-bold text-orange-600">
+        {{ overdue_tasks }}
+      </span>
     </li>
   </ul>
 </section>
 
 <section>
-  <div class="card-header">
+  <div
+    class="mb-4 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+  >
     <div>
-      <h2>Tasks</h2>
-      <p>Showing {{ filtered_task_count }} of {{ total_tasks }} task(s).</p>
+      <p class="text-sm font-semibold uppercase tracking-wide text-blue-600">
+        Tasks
+      </p>
+
+      <h2 class="mt-1 text-2xl font-bold tracking-tight text-slate-950">
+        Project Tasks
+      </h2>
+
+      <p class="mt-2 text-sm text-slate-600">
+        Showing {{ filtered_task_count }} of {{ total_tasks }} task(s).
+      </p>
     </div>
 
-    <div class="actions">
-      <a href="{% url 'tasks:task_create' project.pk %}">Add Task</a>
-    </div>
+    <a
+      href="{% url 'tasks:task_create' project.pk %}"
+      class="inline-flex w-fit items-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
+    >
+      Add Task
+    </a>
   </div>
 
-  <form method="get" class="filter-form">
-    <div class="filter-grid">
+  <form
+    method="get"
+    class="mb-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+  >
+    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <p>
-        <label for="q">Search</label>
+        <label for="q" class="mb-1 block text-sm font-medium text-slate-700">
+          Search
+        </label>
+
         <input
           type="text"
           id="q"
           name="q"
           value="{{ query }}"
           placeholder="Search tasks..."
+          class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
         />
       </p>
 
       <p>
-        <label for="status">Status</label>
-        <select id="status" name="status">
+        <label
+          for="status"
+          class="mb-1 block text-sm font-medium text-slate-700"
+        >
+          Status
+        </label>
+
+        <select
+          id="status"
+          name="status"
+          class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+        >
           <option value="">All Statuses</option>
 
           {% for value, label in status_choices %}
@@ -107,7 +199,9 @@ Task Manager{% endblock %} {% block content %}
             if
             selected_status=""
             ="value"
-            %}selected{%
+            %}
+            selected
+            {%
             endif
             %}
           >
@@ -118,8 +212,18 @@ Task Manager{% endblock %} {% block content %}
       </p>
 
       <p>
-        <label for="priority">Priority</label>
-        <select id="priority" name="priority">
+        <label
+          for="priority"
+          class="mb-1 block text-sm font-medium text-slate-700"
+        >
+          Priority
+        </label>
+
+        <select
+          id="priority"
+          name="priority"
+          class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+        >
           <option value="">All Priorities</option>
 
           {% for value, label in priority_choices %}
@@ -129,7 +233,9 @@ Task Manager{% endblock %} {% block content %}
             if
             selected_priority=""
             ="value"
-            %}selected{%
+            %}
+            selected
+            {%
             endif
             %}
           >
@@ -140,15 +246,24 @@ Task Manager{% endblock %} {% block content %}
       </p>
 
       <p>
-        <label for="sort">Sort</label>
-        <select id="sort" name="sort">
+        <label for="sort" class="mb-1 block text-sm font-medium text-slate-700">
+          Sort
+        </label>
+
+        <select
+          id="sort"
+          name="sort"
+          class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+        >
           <option
             value="due_date"
             {%
             if
             selected_sort=""
             ="due_date"
-            %}selected{%
+            %}
+            selected
+            {%
             endif
             %}
           >
@@ -161,7 +276,9 @@ Task Manager{% endblock %} {% block content %}
             if
             selected_sort=""
             ="-due_date"
-            %}selected{%
+            %}
+            selected
+            {%
             endif
             %}
           >
@@ -174,7 +291,9 @@ Task Manager{% endblock %} {% block content %}
             if
             selected_sort=""
             ="created_at"
-            %}selected{%
+            %}
+            selected
+            {%
             endif
             %}
           >
@@ -187,7 +306,9 @@ Task Manager{% endblock %} {% block content %}
             if
             selected_sort=""
             ="-created_at"
-            %}selected{%
+            %}
+            selected
+            {%
             endif
             %}
           >
@@ -200,7 +321,9 @@ Task Manager{% endblock %} {% block content %}
             if
             selected_sort=""
             ="title"
-            %}selected{%
+            %}
+            selected
+            {%
             endif
             %}
           >
@@ -213,7 +336,9 @@ Task Manager{% endblock %} {% block content %}
             if
             selected_sort=""
             ="-title"
-            %}selected{%
+            %}
+            selected
+            {%
             endif
             %}
           >
@@ -226,7 +351,9 @@ Task Manager{% endblock %} {% block content %}
             if
             selected_sort=""
             ="priority"
-            %}selected{%
+            %}
+            selected
+            {%
             endif
             %}
           >
@@ -239,7 +366,9 @@ Task Manager{% endblock %} {% block content %}
             if
             selected_sort=""
             ="-priority"
-            %}selected{%
+            %}
+            selected
+            {%
             endif
             %}
           >
@@ -249,78 +378,143 @@ Task Manager{% endblock %} {% block content %}
       </p>
     </div>
 
-    <div class="actions">
-      <button type="submit">Apply Filters</button>
+    <div class="mt-4 flex flex-wrap gap-2">
+      <button
+        type="submit"
+        class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
+      >
+        Apply Filters
+      </button>
+
       <a
         href="{% url 'tasks:project_detail' project.pk %}"
-        class="button-secondary"
-        >Clear Filters</a
+        class="inline-flex items-center rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50"
       >
+        Clear Filters
+      </a>
     </div>
   </form>
 
-  {% if tasks %} {% for task in tasks %}
-  <article class="card">
-    <div class="card-header">
-      <div>
-        <h3>{{ task.title }}</h3>
+  {% if tasks %}
+  <div class="space-y-4">
+    {% for task in tasks %}
+    <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div
+        class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between"
+      >
+        <div>
+          <h3 class="text-xl font-bold text-slate-950">{{ task.title }}</h3>
 
-        {% if task.description %}
-        <p>{{ task.description }}</p>
+          {% if task.description %}
+          <p class="mt-2 leading-6 text-slate-600">{{ task.description }}</p>
+          {% else %}
+          <p class="mt-2 italic text-slate-500">No description provided.</p>
+          {% endif %}
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          <a
+            href="{% url 'tasks:task_edit' task.pk %}"
+            class="inline-flex items-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+          >
+            Edit
+          </a>
+
+          <a
+            href="{% url 'tasks:task_delete' task.pk %}"
+            class="inline-flex items-center rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-700"
+          >
+            Delete
+          </a>
+
+          <a
+            href="{% url 'tasks:task_toggle_complete' task.pk %}"
+            class="inline-flex items-center rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+          >
+            {% if task.status == "done" %} Reopen {% else %} Complete {% endif%}
+          </a>
+        </div>
+      </div>
+
+      <div class="mt-4 flex flex-wrap gap-2">
+        {% if task.status == "done" %}
+        <span
+          class="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700"
+        >
+          {{ task.get_status_display }}
+        </span>
+        {% elif task.status == "in_progress" %}
+        <span
+          class="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700"
+        >
+          {{ task.get_status_display }}
+        </span>
         {% else %}
-        <p>No description provided.</p>
+        <span
+          class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700"
+        >
+          {{ task.get_status_display }}
+        </span>
+        {% endif %} {% if task.priority == "high" %}
+        <span
+          class="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700"
+        >
+          {{ task.get_priority_display }} Priority
+        </span>
+        {% else %}
+        <span
+          class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700"
+        >
+          {{ task.get_priority_display }} Priority
+        </span>
+        {% endif %} {% if task.due_date %}
+        <span
+          class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700"
+        >
+          Due: {{ task.due_date }}
+        </span>
+        {% else %}
+        <span
+          class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700"
+        >
+          No due date
+        </span>
         {% endif %}
       </div>
-    </div>
 
-    <div class="task-meta">
-      {% if task.status == "done" %}
-      <span class="badge badge-done">{{ task.get_status_display }}</span>
-      {% elif task.status == "in_progress" %}
-      <span class="badge badge-progress">{{ task.get_status_display }}</span>
-      {% else %}
-      <span class="badge">{{ task.get_status_display }}</span>
-      {% endif %} {% if task.priority == "high" %}
-      <span class="badge badge-high"
-        >{{ task.get_priority_display }} Priority</span
-      >
-      {% else %}
-      <span class="badge">{{ task.get_priority_display }} Priority</span>
-      {% endif %} {% if task.due_date %}
-      <span class="badge">Due: {{ task.due_date }}</span>
-      {% else %}
-      <span class="badge">No due date</span>
+      {% if task.completed_at %}
+      <p class="mt-4 text-sm text-slate-600">
+        <strong class="text-slate-800">Completed:</strong>
+        {{ task.completed_at }}
+      </p>
       {% endif %}
-    </div>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div
+    class="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm"
+  >
+    <h3 class="text-xl font-bold text-slate-950">No matching tasks</h3>
 
-    {% if task.completed_at %}
-    <p><strong>Completed:</strong> {{ task.completed_at }}</p>
-    {% endif %}
+    <p class="mt-2 text-slate-600">
+      This project does not have any matching tasks.
+    </p>
 
-    <div class="actions">
-      <a href="{% url 'tasks:task_edit' task.pk %}" class="button-secondary"
-        >Edit Task</a
+    <div class="mt-6 flex flex-wrap justify-center gap-2">
+      <a
+        href="{% url 'tasks:task_create' project.pk %}"
+        class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
       >
-      <a href="{% url 'tasks:task_delete' task.pk %}" class="button-danger"
-        >Delete Task</a
-      >
-      <a href="{% url 'tasks:task_toggle_complete' task.pk %}">
-        {% if task.status == "done" %} Reopen Task {% else %} Mark Complete
-        {%endif %}
+        Add Task
       </a>
-    </div>
-  </article>
-  {% endfor %} {% else %}
-  <div class="empty-state">
-    <p>This project does not have any matching tasks.</p>
 
-    <div class="actions">
-      <a href="{% url 'tasks:task_create' project.pk %}">Add Task</a>
       <a
         href="{% url 'tasks:project_detail' project.pk %}"
-        class="button-secondary"
-        >Clear Filters</a
+        class="inline-flex items-center rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50"
       >
+        Clear Filters
+      </a>
     </div>
   </div>
   {% endif %}
