@@ -1,6 +1,8 @@
 from django.db.models import Q
 from django.utils import timezone
 from django.contrib import messages
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -10,6 +12,34 @@ from .forms import ProjectForm, TaskForm
 
 def home(request):
     return render(request, "tasks/home.html")
+
+
+def register(request):
+    if request.user.is_authenticated:
+        return redirect("tasks:project_list")
+
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+
+            messages.success(request, "Account created successfully")
+            return redirect("tasks:project_list")
+    else:
+        form = UserCreationForm()
+
+    input_classes = (
+        "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 "
+        "text-sm text-slate-900 shadow-sm "
+        "focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+    )
+
+    for field in form.fields.values():
+        field.widget.attrs.update({"class": input_classes})
+
+    return render(request, "tasks/registration/register.html", {"form": form})
 
 
 @login_required

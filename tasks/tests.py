@@ -429,3 +429,51 @@ class TaskFilterAndStatsTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Overdue")
         self.assertContains(response, "1")
+
+
+class AuthViewTests(TestCase):
+    def test_register_page_loads(self):
+        response = self.client.get(reverse("register"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Register")
+
+    def test_user_can_register(self):
+        response = self.client.post(
+            reverse("register"),
+            {
+                "username": "newuser",
+                "password1": "StrongPass12345!",
+                "password2": "StrongPass12345!",
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(User.objects.filter(username="newuser").exists())
+
+    def test_logged_in_user_is_redirected_from_register_page(self):
+        User.objects.create_user(
+            username="johnny",
+            password="testpass123",
+        )
+
+        logged_in = self.client.login(username="johnny", password="testpass123")
+
+        self.assertTrue(logged_in)
+
+        response = self.client.get(reverse("register"))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("tasks:project_list"))
+
+    def test_login_page_loads(self):
+        response = self.client.get(reverse("login"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Log in")
+
+    def test_protected_page_redirects_to_login(self):
+        response = self.client.get(reverse("tasks:project_list"))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse("login"), response.url)

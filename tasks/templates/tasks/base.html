@@ -24,7 +24,7 @@
           </p>
         </div>
 
-        <nav class="flex flex-wrap gap-2">
+        <nav class="flex flex-wrap items-center gap-2">
           <a
             href="{% url 'tasks:home' %}"
             class="rounded-md px-3 py-2 text-sm font-medium text-slate-200 hover:bg-slate-800 hover:text-white"
@@ -32,6 +32,7 @@
             Home
           </a>
 
+          {% if user.is_authenticated %}
           <a
             href="{% url 'tasks:project_list' %}"
             class="rounded-md px-3 py-2 text-sm font-medium text-slate-200 hover:bg-slate-800 hover:text-white"
@@ -45,6 +46,35 @@
           >
             New Project
           </a>
+
+          <span class="px-3 py-2 text-sm text-slate-300">
+            Hi, {{ user.username }}
+          </span>
+
+          <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button
+              type="submit"
+              class="rounded-md bg-slate-800 px-3 py-2 text-sm font-medium text-slate-100 hover:bg-slate-700"
+            >
+              Logout
+            </button>
+          </form>
+          {% else %}
+          <a
+            href="{% url 'login' %}"
+            class="rounded-md px-3 py-2 text-sm font-medium text-slate-200 hover:bg-slate-800 hover:text-white"
+          >
+            Login
+          </a>
+
+          <a
+            href="{% url 'register' %}"
+            class="rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          >
+            Register
+          </a>
+          {% endif %}
         </nav>
       </div>
     </header>
