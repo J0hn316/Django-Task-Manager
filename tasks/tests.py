@@ -466,14 +466,62 @@ class AuthViewTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("tasks:project_list"))
 
+    def test_logged_in_user_is_redirected_from_login_page(self):
+        User.objects.create_user(
+            username="johnlogin",
+            password="testpass123",
+        )
+
+        logged_in = self.client.login(username="johnlogin", password="testpass123")
+
+        self.assertTrue(logged_in)
+
+        response = self.client.get(reverse("login"))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("tasks:project_list"))
+
     def test_login_page_loads(self):
         response = self.client.get(reverse("login"))
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Log in")
 
+    def test_user_can_logout(self):
+        User.objects.create_user(
+            username="logoutuser",
+            password="testpass123",
+        )
+
+        logged_in = self.client.login(username="logoutuser", password="testpass123")
+
+        self.assertTrue(logged_in)
+
+        response = self.client.post(reverse("logout"))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("tasks:home"))
+
     def test_protected_page_redirects_to_login(self):
         response = self.client.get(reverse("tasks:project_list"))
 
         self.assertEqual(response.status_code, 302)
         self.assertIn(reverse("login"), response.url)
+
+    def test_logout_requires_post_for_state_change(self):
+        User.objects.create_user(
+            username="getlogoutuser",
+            password="testpass123",
+        )
+
+        logged_in = self.client.login(username="getlogoutuser", password="testpass123")
+
+        self.assertTrue(logged_in)
+
+        response = self.client.get(reverse("logout"))
+
+        self.assertEqual(response.status_code, 302)
+
+        protected_response = self.client.get(reverse("tasks:project_list"))
+
+        self.assertEqual(protected_response.status_code, 200)

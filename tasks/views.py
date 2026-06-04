@@ -1,7 +1,7 @@
 from django.db.models import Q
 from django.utils import timezone
 from django.contrib import messages
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
@@ -40,6 +40,14 @@ def register(request):
         field.widget.attrs.update({"class": input_classes})
 
     return render(request, "tasks/registration/register.html", {"form": form})
+
+
+def logout_user(request):
+    if request.method == "POST":
+        logout(request)
+        messages.success(request, "You have been logged out successfully.")
+
+    return redirect("tasks:home")
 
 
 @login_required

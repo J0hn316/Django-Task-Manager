@@ -8,14 +8,13 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path(
         "login/",
-        auth_views.LoginView.as_view(template_name="tasks/registration/login.html"),
+        auth_views.LoginView.as_view(
+            template_name="tasks/registration/login.html",
+            redirect_authenticated_user=True,
+        ),
         name="login",
     ),
-    path(
-        "logout/",
-        auth_views.LogoutView.as_view(),
-        name="logout",
-    ),
+    path("logout/", task_views.logout_user, name="logout"),
     path("register/", task_views.register, name="register"),
     path("", include("tasks.urls")),
 ]
