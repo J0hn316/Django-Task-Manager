@@ -525,3 +525,102 @@ class AuthViewTests(TestCase):
         protected_response = self.client.get(reverse("tasks:project_list"))
 
         self.assertEqual(protected_response.status_code, 200)
+
+
+class PaginationTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="paginationuser",
+            password="testpass123",
+        )
+
+        self.client.login(
+            username="paginationuser",
+            password="testpass123",
+        )
+
+    def test_project_list_is_paginated(self):
+        for number in range(1, 8):
+            Project.objects.create(
+                owner=self.user,
+                name=f"Project {number}",
+            )
+
+        response = self.client.get(reverse("tasks:project_list"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["projects"]), 6)
+        self.assertTrue(response.context["page_obj"].has_next())
+
+    def test_second_project_page_displays_remaining_projects(self):
+        for number in range(1, 8):
+            Project.objects.create(
+                owner=self.user,
+                name=f"Project {number}",
+            )
+
+        response = self.client.get(
+            reverse("tasks:project_list"),
+            {"page": 2},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["projects"]), 1)
+        self.assertEqual(response.context["page_obj"].number, 2)
+
+    def test_task_list_is_paginated(self):
+        project = Project.objects.create(
+            owner=self.user,
+            name="Paginated Project",
+        )
+
+        for number in range(1, 8):
+            Task.objects.create(
+                project=project,
+                title=f"Task {number}",
+                status=Task.Status.TODO,
+                priority=Task.Priority.MEDIUM,
+            )
+
+        response = self.client.get(reverse("tasks:project_detail", args=[project.pk]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["tasks"]), 6)
+        self.assertTrue(response.context["page_obj"].has_next())
+
+    def test_task_pagination_preserves_filters(self):
+        project = Project.objects.create(
+            owner=self.user,
+            name="Filter Pagination Project",
+        )
+
+        for number in range(1, 8):
+            Task.objects.create(
+                project=project,
+                title=f"High Task {number}",
+                status=Task.Status.TODO,
+                priority=Task.Priority.HIGH,
+            )
+
+        Task.objects.create(
+            project=project,
+            title="Low Task",
+            status=Task.Status.TODO,
+            priority=Task.Priority.LOW,
+        )
+
+        response = self.client.get(
+            reverse("tasks:project_detail", args=[project.pk]),
+            {
+                "priority": Task.Priority.HIGH,
+                "page": 2,
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["filtered_task_count"], 7)
+        self.assertEqual(len(response.context["tasks"]), 1)
+        self.assertEqual(
+            response.context["query_string"],
+            "priority=high",
+        )

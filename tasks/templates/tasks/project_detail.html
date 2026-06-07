@@ -145,8 +145,14 @@ Task Manager{% endblock %} {% block content %}
       </h2>
 
       <p class="mt-2 text-sm text-slate-600">
-        Showing {{ filtered_task_count }} of {{ total_tasks }} task(s).
+        {{ filtered_task_count }} of {{ total_tasks }} task(s) match the current
+        filters.
       </p>
+      {% if page_obj.paginator.count %}
+      <p class="mt-1 text-sm text-slate-500">
+        Displaying results {{ page_obj.start_index }}–{{ page_obj.end_index }}.
+      </p>
+      {% endif %}
     </div>
 
     <a
@@ -491,7 +497,7 @@ Task Manager{% endblock %} {% block content %}
     </article>
     {% endfor %}
   </div>
-  {% else %}
+  {% include "tasks/includes/pagination.html" %} {% else %}
   <div
     class="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm"
   >

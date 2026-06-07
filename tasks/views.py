@@ -1,6 +1,7 @@
 from django.db.models import Q
 from django.utils import timezone
 from django.contrib import messages
+from django.core.paginator import Paginator
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
@@ -54,7 +55,26 @@ def logout_user(request):
 def project_list(request):
     projects = Project.objects.filter(owner=request.user)
 
-    return render(request, "tasks/project_list.html", {"projects": projects})
+    paginator = Paginator(projects, 6)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    page_range = paginator.get_elided_page_range(
+        page_obj.number,
+        on_each_side=1,
+        on_ends=1,
+    )
+
+    return render(
+        request,
+        "tasks/project_list.html",
+        {
+            "projects": page_obj,
+            "page_obj": page_obj,
+            "page_range": page_range,
+            "query_string": "",
+        },
+    )
 
 
 @login_required
@@ -112,6 +132,22 @@ def project_detail(request, pk):
     tasks = tasks.order_by(sort_field)
     filtered_task_count = tasks.count()
 
+    paginator = Paginator(tasks, 6)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    page_range = paginator.get_elided_page_range(
+        page_obj.number,
+        on_each_side=1,
+        on_ends=1,
+    )
+
+    query_params = request.GET.copy()
+    query_params.pop("page", None)
+    query_string = query_params.urlencode()
+
+    tasks = page_obj
+
     return render(
         request,
         "tasks/project_detail.html",
@@ -131,6 +167,9 @@ def project_detail(request, pk):
             "high_priority_tasks": high_priority_tasks,
             "overdue_tasks": overdue_tasks,
             "filtered_task_count": filtered_task_count,
+            "page_obj": page_obj,
+            "page_range": page_range,
+            "query_string": query_string,
         },
     )
 
